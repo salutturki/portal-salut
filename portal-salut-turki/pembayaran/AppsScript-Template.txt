@@ -1,0 +1,259 @@
+// =========================================================================
+// KONFIGURASI UTAMA
+// =========================================================================
+    
+// 1. ID Folder Google Drive untuk menyimpan Bukti Transfer
+var FOLDER_ID = "MASUKKAN_ID_FOLDER_GOOGLE_DRIVE_ANDA_DISINI"; 
+
+// 2. ID Google Sheets untuk menyimpan Rekap Pembayaran
+var SHEET_ID = "MASUKKAN_ID_GOOGLE_SHEETS_ANDA_DISINI";
+
+// 3. Konfigurasi Teks Email yang akan dikirim ke Mahasiswa
+var EMAIL_SUBJECT = "Invoice LUNAS Pembayaran - Salut Bilge Turki UT";
+var EMAIL_BODY = 
+  "Yth. Bapak/Ibu {NAMA},\n\n" +
+  "Pembayaran Anda telah berhasil kami verifikasi.\n" +
+  "Berikut kami lampirkan Invoice (Bukti Tagihan) resmi pendaftaran Anda berformat PDF " +
+  "sebagai tanda bukti bahwa pembayaran Anda telah LUNAS.\n\n" +
+  "Langkah selanjutnya, tim administrasi kami akan segera menghubungi Anda melalui WhatsApp " +
+  "untuk proses lebih lanjut.\n\n" +
+  "Jika ada pertanyaan, silakan balas email ini atau hubungi layanan WhatsApp kami.\n\n" +
+  "Hormat kami,\n" +
+  "Tim Administrasi Salut Bilge Turki UT";
+
+// =========================================================================
+// BAGIAN 1: MENERIMA DATA DARI WEB (Hanya Simpan Data, Tidak Kirim Email)
+// =========================================================================
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var timestamp = new Date();
+    var invoiceNumber = "INV-" + timestamp.getTime();
+
+    // Simpan File ke Drive
+    var folder = DriveApp.getFolderById(FOLDER_ID);
+    var safeName = data.namaLengkap.replace(/[^a-zA-Z0-9 ]/g, "");
+    var buktiTransferUrl = "";
+    
+    if (data.buktiTransferBase64) {
+      var blob = Utilities.newBlob(Utilities.base64Decode(data.buktiTransferBase64), data.buktiTransferMimeType, safeName + "_BuktiTransfer_" + invoiceNumber);
+      var file = folder.createFile(blob);
+      buktiTransferUrl = file.getUrl();
+    }
+
+    // Simpan Data ke Sheets
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Waktu Pembayaran", "No Invoice", "Nama Lengkap", "Email", "No WhatsApp", 
+        "Layanan", "Link Bukti Transfer", "Status"
+      ]);
+      sheet.setFrozenRows(1);
+    }
+    
+    sheet.appendRow([
+      timestamp,
+      invoiceNumber,
+      data.namaLengkap,
+      data.email,
+      data.noWA,
+      data.layanan,
+      buktiTransferUrl,
+      "Menunggu Cek Admin" // Status default
+    ]);
+
+    return ContentService.createTextOutput(JSON.stringify({ "status": "success", "message": "Data berhasil disimpan!" })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ "status": "error", "message": error.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("Script Pembayaran Aktif!").setMimeType(ContentService.MimeType.TEXT);
+}
+
+// =========================================================================
+// BAGIAN 2: MENU VERIFIKASI DI GOOGLE SHEETS
+// =========================================================================
+function onOpen() {
+  var ui = SpreadsheetApp.getUi();
+  ui.createMenu('⚙️ Menu Salut')
+      .addItem('Kirim Invoice (LUNAS)', 'kirimInvoiceLunas')
+      .addToUi();
+}
+
+// =========================================================================
+// BAGIAN 3: FUNGSI PEMBUAT PDF & PENGIRIM EMAIL MANUAL
+// =========================================================================
+function kirimInvoiceLunas() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var row = sheet.getActiveCell().getRow();
+  
+  if (row <= 1) {
+    SpreadsheetApp.getUi().alert('Pilih salah satu baris pendaftar terlebih dahulu (jangan pilih baris judul paling atas).');
+    return;
+  }
+  
+  var status = sheet.getRange(row, 8).getValue();
+  if (status === 'Email Terkirim LUNAS') {
+    SpreadsheetApp.getUi().alert('Invoice untuk pendaftar ini SUDAH PERNAH dikirim!');
+    return;
+  }
+  
+  SpreadsheetApp.getActiveSpreadsheet().toast('Sedang membuat PDF dan mengirim email. Mohon tunggu...', 'Proses Dimulai', 10);
+  
+  var waktu = sheet.getRange(row, 1).getValue();
+  var invoiceNumber = sheet.getRange(row, 2).getValue();
+  var namaLengkap = sheet.getRange(row, 3).getValue();
+  var email = sheet.getRange(row, 4).getValue();
+  var noWA = sheet.getRange(row, 5).getValue();
+  var layanan = sheet.getRange(row, 6).getValue();
+  
+  var dateString = "";
+  if (waktu instanceof Date) {
+     dateString = Utilities.formatDate(waktu, "Asia/Jakarta", "dd MMMM yyyy HH:mm");
+  } else {
+     dateString = waktu;
+  }
+  
+  var safeName = namaLengkap.replace(/[^a-zA-Z0-9 ]/g, "");
+  var layananParts = layanan.split(" - ");
+  var namaLayanan = layananParts[0] || layanan;
+  var hargaLayananRaw = layananParts[1] || "Menunggu Pengecekan";
+  var hargaLayanan = hargaLayananRaw.replace(" / semester", "").replace("/ semester", "").trim();
+
+  // Susun Rincian Tagihan
+  var rincianHTML = "";
+  if (namaLayanan.includes("Starter UT ALL IN")) {
+     rincianHTML += "<tr><td>Biaya Salut (Starter UT)</td><td style='text-align:right;'>IDR 199.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Akademik 1 Semester (20 SKS @120.000)</td><td style='text-align:right;'>IDR 2.400.000</td></tr>";
+  } else if (namaLayanan.includes("Starter UT")) {
+     rincianHTML += "<tr><td>Biaya Salut (Starter UT)</td><td style='text-align:right;'>IDR 199.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
+  } else if (namaLayanan.includes("Starter Plus ALL IN")) {
+     rincianHTML += "<tr><td>Biaya Salut (Starter Plus)</td><td style='text-align:right;'>IDR 399.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Akademik 1 Semester (20 SKS @120.000)</td><td style='text-align:right;'>IDR 2.400.000</td></tr>";
+  } else if (namaLayanan.includes("Starter Plus")) {
+     rincianHTML += "<tr><td>Biaya Salut (Starter Plus)</td><td style='text-align:right;'>IDR 399.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
+  } else if (namaLayanan.includes("Academic Support ALL IN")) {
+     rincianHTML += "<tr><td>Biaya Salut (Academic Support)</td><td style='text-align:right;'>IDR 599.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Akademik 1 Semester (20 SKS @120.000)</td><td style='text-align:right;'>IDR 2.400.000</td></tr>";
+  } else if (namaLayanan.includes("Academic Support")) {
+     rincianHTML += "<tr><td>Biaya Salut (Academic Support)</td><td style='text-align:right;'>IDR 599.000</td></tr>";
+     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
+  } else if (namaLayanan.includes("Member Salut (Khusus)")) {
+     rincianHTML += "<tr><td>Paket Member Salut (Pembayaran Khusus)</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Member Salut")) {
+     rincianHTML += "<tr><td>Paket Member Salut (Perpanjangan)</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Pasti Lulus")) {
+     rincianHTML += "<tr><td>Paket Pasti Lulus</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else {
+     rincianHTML += "<tr><td>" + namaLayanan + "</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  }
+
+  var htmlInvoice = `
+  <html>
+    <head>
+      <style>
+        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; margin: 40px; line-height: 1.6; position: relative; z-index: 1; }
+        .watermark { position: absolute; top: 250px; left: 50%; margin-left: -200px; width: 400px; opacity: 0.1; z-index: -1; }
+        .invoice-details { display: flex; justify-content: space-between; margin-bottom: 40px; }
+        .table-items { width: 100%; border-collapse: collapse; margin-bottom: 40px; background-color: transparent; }
+        .table-items tr { background-color: transparent; }
+        .table-items th { background-color: #0A3281; color: white; padding: 12px; text-align: left; border: none; }
+        .table-items td { padding: 12px; background-color: transparent; border: none; }
+        .total-row { font-weight: bold; font-size: 18px; border-top: 2px solid #0A3281; }
+        .badge-lunas { display: inline-block; background-color: #DEF7EC; color: #03543F; border: 1px solid #31C48D; border-radius: 4px; padding: 4px 10px; font-size: 12px; margin-top: 8px; vertical-align: middle; letter-spacing: 1px; font-weight: bold; }
+        .footer { margin-top: 50px; font-size: 12px; color: #777; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
+        .package-title { font-weight: bold; color: #0A3281; font-size: 16px; margin-bottom: 10px; }
+      </style>
+    </head>
+    <body>
+      <img src="data:image/png;base64,{{UT_LOGO_B64}}" class="watermark" alt="UT Watermark">
+      
+      <table style="width: 100%; border-bottom: 2px solid #0A3281; padding-bottom: 15px; margin-bottom: 30px;">
+        <tr>
+          <td style="width: 50%; vertical-align: middle;">
+            <img src="data:image/png;base64,{{SALUT_LOGO_B64}}" style="height: 65px;" alt="Salut">
+          </td>
+          <td style="width: 50%; text-align: right; vertical-align: middle;">
+            <h1 style="color: #0A3281; font-size: 32px; margin: 0; letter-spacing: 2px;">INVOICE</h1>
+            <p style="color: #666; margin: 5px 0 0 0; font-size: 14px;">Salut Bilge Turki Universitas Terbuka</p>
+          </td>
+        </tr>
+      </table>
+      
+      <table style="width: 100%; margin-bottom: 30px;">
+        <tr>
+          <td style="width: 50%; vertical-align: top;">
+            <strong style="color: #666; font-size: 14px;">DITAGIHKAN KEPADA:</strong><br>
+            <span style="font-size: 16px; font-weight: bold; color: #333;">${namaLengkap}</span><br>
+            ${noWA}<br>
+            ${email}
+          </td>
+          <td style="width: 50%; text-align: right; vertical-align: top;">
+            <strong style="color: #666; font-size: 14px;">NO. INVOICE:</strong><br>
+            <span style="font-size: 16px; font-weight: bold; color: #333;">${invoiceNumber}</span><br><br>
+            <strong style="color: #666; font-size: 14px;">TANGGAL:</strong><br>
+            <span style="font-size: 15px; color: #333;">${dateString}</span>
+          </td>
+        </tr>
+      </table>
+
+      <div class="package-title">Paket Terpilih: ${namaLayanan}</div>
+      
+      <table class="table-items">
+        <thead>
+          <tr>
+            <th style="width: 65%;">Rincian Pembayaran</th>
+            <th style="text-align: right; width: 35%;">Jumlah</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rincianHTML}
+          <tr class="total-row">
+            <td style="text-align: right; padding-top: 20px; vertical-align: top;">TOTAL:</td>
+            <td style="text-align: right; padding-top: 20px; vertical-align: top; color: #0A3281; font-size: 20px;">
+                ${hargaLayanan}<br>
+                <span class="badge-lunas">LUNAS</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="footer">
+        <p>Terima kasih atas pembayaran Anda. Invoice ini adalah bukti transaksi yang sah dan telah diverifikasi oleh sistem.</p>
+        <p>Rincian di atas telah disesuaikan dengan daftar biaya resmi Salut Bilge Turki UT.</p>
+      </div>
+    </body>
+  </html>
+  `;
+
+  try {
+    var htmlBlob = Utilities.newBlob(htmlInvoice, 'text/html', 'invoice.html');
+    var pdfBlob = htmlBlob.getAs('application/pdf');
+    pdfBlob.setName("Invoice_LUNAS_" + safeName + "_" + invoiceNumber + ".pdf");
+
+    var finalEmailBody = EMAIL_BODY.replace("{NAMA}", namaLengkap);
+    
+    MailApp.sendEmail({
+      to: email,
+      subject: EMAIL_SUBJECT,
+      body: finalEmailBody,
+      attachments: [pdfBlob],
+      name: "Salut Bilge Turki UT"
+    });
+
+    // Tandai sukses di Sheets
+    sheet.getRange(row, 8).setValue('Email Terkirim LUNAS');
+    SpreadsheetApp.getUi().alert('✅ SUKSES!\n\nInvoice PDF dengan stempel LUNAS telah berhasil dikirimkan ke email:\n' + email);
+    
+  } catch(e) {
+    SpreadsheetApp.getUi().alert('❌ GAGAL MENGIRIM EMAIL!\n\nPastikan alamat email ("' + email + '") diketik dengan benar tanpa spasi ekstra.\nError: ' + e.toString());
+  }
+}
