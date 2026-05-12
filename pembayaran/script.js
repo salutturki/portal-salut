@@ -98,14 +98,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Tampilkan layar sukses
-            form.reset();
-            form.classList.add('hidden');
-            document.getElementById('mainTitle').classList.add('hidden');
-            document.getElementById('mainSubtitle').classList.add('hidden');
+            if (form) {
+                form.reset();
+                form.classList.add('hidden');
+            }
+            const mainTitle = document.getElementById('mainTitle');
+            if (mainTitle) mainTitle.classList.add('hidden');
+            
+            const mainSubtitle = document.getElementById('mainSubtitle');
+            if (mainSubtitle) mainSubtitle.classList.add('hidden');
             
             const successScreen = document.getElementById('successScreen');
-            successScreen.classList.remove('hidden');
-            successScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (successScreen) {
+                successScreen.classList.remove('hidden');
+                try {
+                    successScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } catch (e) {
+                    window.scrollTo(0, 0);
+                }
+            }
             
         } catch (error) {
             console.error('Error:', error);

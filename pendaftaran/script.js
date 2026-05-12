@@ -144,16 +144,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Tampilkan layar sukses
-            form.reset();
-            form.classList.add('hidden'); // Sembunyikan form
-            document.getElementById('mainTitle').classList.add('hidden'); // Sembunyikan judul lama
-            document.getElementById('mainSubtitle').classList.add('hidden'); // Sembunyikan subjudul lama
+            if (form) {
+                form.reset();
+                form.classList.add('hidden'); // Sembunyikan form
+            }
+            const mainTitle = document.getElementById('mainTitle');
+            if (mainTitle) mainTitle.classList.add('hidden'); // Sembunyikan judul lama
+            
+            const mainSubtitle = document.getElementById('mainSubtitle');
+            if (mainSubtitle) mainSubtitle.classList.add('hidden'); // Sembunyikan subjudul lama
             
             const successScreen = document.getElementById('successScreen');
-            successScreen.classList.remove('hidden'); // Tampilkan layar sukses
-            
-            // Scroll ke atas layar sukses
-            successScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (successScreen) {
+                successScreen.classList.remove('hidden'); // Tampilkan layar sukses
+                try {
+                    // Scroll ke atas layar sukses
+                    successScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } catch (e) {
+                    window.scrollTo(0, 0);
+                }
+            }
             
         } catch (error) {
             console.error('Error:', error);
