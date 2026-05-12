@@ -252,6 +252,22 @@
                     </div>
                 </div>
 
+                <!-- 4. Tanda Tangan -->
+                <div class="upload-item">
+                    <div class="upload-item-info">
+                        <label for="ttd">Tanda Tangan Asli di Kertas Putih <span class="required-asterisk">*</span></label>
+                        <span class="file-format">Format: JPG/PNG</span>
+                    </div>
+                    <div class="upload-action">
+                        <input type="file" id="ttd" name="ttd" accept="image/png, image/jpeg, image/jpg" required class="file-input-hidden">
+                        <button type="button" class="btn-upload" onclick="document.getElementById('ttd').click()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Unggah
+                        </button>
+                        <span id="ttdName" class="file-chosen-text">Belum ada berkas</span>
+                    </div>
+                </div>
+
                 <div class="upload-legend">
                     <div class="legend-dot"></div>
                     <span>Hitam: Belum / Baru Unggah Berkas</span>

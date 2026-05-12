@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInputs = [
         { id: 'pasFoto', nameId: 'pasFotoName', maxSize: 5 }, // 5MB
         { id: 'ktp', nameId: 'ktpName', maxSize: 5 },
-        { id: 'ijazah', nameId: 'ijazahName', maxSize: 5 }
+        { id: 'ijazah', nameId: 'ijazahName', maxSize: 5 },
+        { id: 'ttd', nameId: 'ttdName', maxSize: 5 }
     ];
 
     fileInputs.forEach(input => {
@@ -55,9 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const pasFotoFile = document.getElementById('pasFoto').files[0];
         const ktpFile = document.getElementById('ktp').files[0];
         const ijazahFile = document.getElementById('ijazah').files[0];
+        const ttdFile = document.getElementById('ttd').files[0];
 
-        if (!pasFotoFile || !ktpFile || !ijazahFile) {
-            alert('Mohon unggah semua dokumen yang diwajibkan (Pas Foto, KTP, dan Ijazah).');
+        if (!pasFotoFile || !ktpFile || !ijazahFile || !ttdFile) {
+            alert('Mohon unggah semua dokumen yang diwajibkan (Pas Foto, KTP, Ijazah, dan Tanda Tangan).');
             return;
         }
 
@@ -71,11 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Dapatkan seluruh data teks
             const formData = new FormData(form);
             
-            // Konversi 3 file gambar/pdf menjadi Base64 secara paralel
-            const [base64PasFoto, base64Ktp, base64Ijazah] = await Promise.all([
+            // Konversi 4 file gambar/pdf menjadi Base64 secara paralel
+            const [base64PasFoto, base64Ktp, base64Ijazah, base64Ttd] = await Promise.all([
                 convertFileToBase64(pasFotoFile),
                 convertFileToBase64(ktpFile),
-                convertFileToBase64(ijazahFile)
+                convertFileToBase64(ijazahFile),
+                convertFileToBase64(ttdFile)
             ]);
 
             const payload = {
@@ -117,7 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // File 3: Ijazah
                 ijazahName: ijazahFile.name,
                 ijazahMimeType: ijazahFile.type,
-                ijazahBase64: base64Ijazah.split(',')[1]
+                ijazahBase64: base64Ijazah.split(',')[1],
+
+                // File 4: Tanda Tangan
+                ttdName: ttdFile.name,
+                ttdMimeType: ttdFile.type,
+                ttdBase64: base64Ttd.split(',')[1]
             };
 
             // Mengirim data ke Google Apps Script Web App
