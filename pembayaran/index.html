@@ -80,12 +80,53 @@
                     </select>
                     <p class="help-text" style="margin-top: 0.5rem;">Catatan: Opsi <strong>Member Salut</strong> khusus untuk mahasiswa yang sebelumnya sudah terdaftar. Pilih opsi pembayaran sesuai dengan yang telah dikomunikasikan dengan admin.</p>
                 </div>
+            <!-- Data Almamater -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-number">3</span>
+                    <h2>Data Almamater & KTM (Opsional)</h2>
+                </div>
+                
+                <p class="help-text" style="margin-bottom: 1.5rem;">Bagian ini <strong>TIDAK WAJIB</strong> diisi. Hanya diisi apabila paket Anda menyertakan pengiriman Almamater.</p>
+
+                <div class="input-group">
+                    <label for="alamatIndonesia">Alamat Lengkap di Indonesia</label>
+                    <textarea id="alamatIndonesia" name="alamatIndonesia" rows="3" placeholder="Tuliskan alamat lengkap untuk pengiriman almamater"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="ukuranAlmet">Ukuran Almamater</label>
+                    <select id="ukuranAlmet" name="ukuranAlmet">
+                        <option value="" disabled selected>Pilih Ukuran</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                        <option value="XXXL">XXXL</option>
+                    </select>
+                </div>
+
+                <div class="upload-item">
+                    <div class="upload-item-info">
+                        <label for="ktm">Unggah Kartu Tanda Mahasiswa (KTM)</label>
+                        <span class="file-format">Format: PDF, JPG, PNG (Maks 5MB)</span>
+                    </div>
+                    <div class="upload-action">
+                        <input type="file" id="ktm" name="ktm" accept="image/png, image/jpeg, image/jpg, application/pdf" class="file-input-hidden">
+                        <button type="button" class="btn-upload" onclick="document.getElementById('ktm').click()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Unggah
+                        </button>
+                        <span id="ktmName" class="file-chosen-text">Belum ada berkas</span>
+                    </div>
+                </div>
             </section>
 
             <!-- Bukti Transfer -->
             <section class="form-section">
                 <div class="section-header">
-                    <span class="section-number">3</span>
+                    <span class="section-number">4</span>
                     <h2>Unggah Bukti Transfer</h2>
                 </div>
 

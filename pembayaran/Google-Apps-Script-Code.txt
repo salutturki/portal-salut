@@ -34,6 +34,7 @@ function doPost(e) {
     var folder = DriveApp.getFolderById(FOLDER_ID);
     var safeName = data.namaLengkap.replace(/[^a-zA-Z0-9 ]/g, "");
     var buktiTransferUrl = "";
+    var ktmUrl = "";
     
     if (data.buktiTransferBase64) {
       var blob = Utilities.newBlob(Utilities.base64Decode(data.buktiTransferBase64), data.buktiTransferMimeType, safeName + "_BuktiTransfer_" + invoiceNumber);
@@ -41,12 +42,18 @@ function doPost(e) {
       buktiTransferUrl = file.getUrl();
     }
 
+    if (data.ktmBase64) {
+      var blobKtm = Utilities.newBlob(Utilities.base64Decode(data.ktmBase64), data.ktmMimeType, safeName + "_KTM_" + invoiceNumber);
+      var fileKtm = folder.createFile(blobKtm);
+      ktmUrl = fileKtm.getUrl();
+    }
+
     // Simpan Data ke Sheets
     var sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
         "Waktu Pembayaran", "No Invoice", "Nama Lengkap", "Email", "No WhatsApp", 
-        "Layanan", "Link Bukti Transfer", "Status"
+        "Layanan", "Link Bukti Transfer", "Status", "Alamat di Indonesia", "Ukuran Almet", "Link KTM"
       ]);
       sheet.setFrozenRows(1);
     }
@@ -59,7 +66,10 @@ function doPost(e) {
       data.noWA,
       data.layanan,
       buktiTransferUrl,
-      "Menunggu Cek Admin" // Status default
+      "Menunggu Cek Admin", // Status default
+      data.alamatIndonesia || "",
+      data.ukuranAlmet || "",
+      ktmUrl
     ]);
 
     return ContentService.createTextOutput(JSON.stringify({ "status": "success", "message": "Data berhasil disimpan!" })).setMimeType(ContentService.MimeType.JSON);
