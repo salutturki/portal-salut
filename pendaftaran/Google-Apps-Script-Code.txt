@@ -1,0 +1,81 @@
+function doPost(e) {
+  try {
+    // 1. Ganti dengan ID Folder Google Drive Anda
+    var FOLDER_ID = "MASUKKAN_ID_FOLDER_GOOGLE_DRIVE_ANDA_DISINI"; 
+    
+    // 2. Ganti dengan ID Google Sheets Anda (Wajib Diisi agar data masuk!)
+    // Cara mendapatkannya: Buka Google Sheets Anda, lihat URL-nya.
+    // Contoh URL: https://docs.google.com/spreadsheets/d/1BxiMVs0X1Y.../edit
+    // Maka ID-nya adalah yang berada di antara /d/ dan /edit, yaitu: 1BxiMVs0X1Y...
+    var SHEET_ID = "MASUKKAN_ID_GOOGLE_SHEETS_ANDA_DISINI";
+    
+    // Membaca data yang dikirim dari formulir
+    var data = JSON.parse(e.postData.contents);
+    var folder = DriveApp.getFolderById(FOLDER_ID);
+    
+    // Fungsi bantuan untuk menyimpan file
+    function saveFile(base64Data, mimeType, fileName, prefix) {
+      if (!base64Data) return "";
+      var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), mimeType, prefix + "_" + fileName);
+      var file = folder.createFile(blob);
+      return file.getUrl();
+    }
+    
+    // Prefix nama file menggunakan Nama Lengkap Mahasiswa
+    var safeName = data.namaLengkap.replace(/[^a-zA-Z0-9 ]/g, "");
+    
+    // Menyimpan file ke Google Drive
+    var pasFotoUrl = saveFile(data.pasFotoBase64, data.pasFotoMimeType, data.pasFotoName, safeName + "_Foto");
+    var ktpUrl = saveFile(data.ktpBase64, data.ktpMimeType, data.ktpName, safeName + "_KTP");
+    var ijazahUrl = saveFile(data.ijazahBase64, data.ijazahMimeType, data.ijazahName, safeName + "_Ijazah");
+    
+    // Menyimpan data ke Google Sheets menggunakan ID (Lebih Aman dan Anti-Gagal)
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+    
+    // Membuat Header jika Sheet masih kosong
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Waktu Daftar", "Nama Lengkap", "Tempat Lahir", "Tanggal Lahir", "Jenis Kelamin", 
+        "Agama", "Kewarganegaraan", "Status Kawin", "Nama Ibu Kandung", "Pernyataan Difabel", 
+        "Alamat di Turki", "No WhatsApp", "Email", "Pendidikan Terakhir", "Sekolah Asal", 
+        "Jurusan Asal", "Pekerjaan", "Jurusan Tujuan", 
+        "Link Pas Foto", "Link KTP", "Link Ijazah"
+      ]);
+      sheet.setFrozenRows(1);
+    }
+    
+    // Memasukkan data pendaftar baru
+    sheet.appendRow([
+      new Date(),
+      data.namaLengkap,
+      data.tempatLahir,
+      data.tanggalLahir,
+      data.jenisKelamin,
+      data.agama,
+      data.kewarganegaraan,
+      data.statusKawin,
+      data.namaIbu,
+      data.difabel,
+      data.alamat,
+      data.noWA,
+      data.email,
+      data.pendidikanTerakhir,
+      data.sekolahAsal,
+      data.jurusanAsal,
+      data.pekerjaan,
+      data.jurusanTujuan,
+      pasFotoUrl,
+      ktpUrl,
+      ijazahUrl
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ "status": "success", "message": "Data berhasil disimpan!" })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ "status": "error", "message": error.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("Script Aktif! Siap menerima data pemberkasan.").setMimeType(ContentService.MimeType.TEXT);
+}

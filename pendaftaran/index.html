@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Kelengkapan Data - Salut Bilge Turki UT</title>
+    <meta name="description" content="Formulir pemberkasan dan kelengkapan data mahasiswa Salut Bilge Turki Universitas Terbuka.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-decor"></div>
+    <div class="container">
+        <header class="form-header" id="formHeader">
+            <div class="logo-container">
+                <img src="ut_logo.png" alt="Logo Universitas Terbuka" class="logo" id="headerLogoUT" onerror="this.src='https://via.placeholder.com/150x100.png?text=UT+LOGO'">
+                <img src="salut_logo.png" alt="Logo Salut Turki" class="logo" id="headerLogoSalut" onerror="this.src='https://via.placeholder.com/250x100.png?text=SALUT+TURKI+LOGO'">
+            </div>
+            <h1 id="mainTitle">Formulir Kelengkapan Data Mahasiswa</h1>
+            <p id="mainSubtitle">Silakan lengkapi data diri Anda dan unggah dokumen yang dipersyaratkan dengan benar.</p>
+        </header>
+
+        <form id="registrationForm" class="main-form">
+            <!-- Bagian 1: Data Pribadi -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-number">1</span>
+                    <h2>Data Pribadi</h2>
+                </div>
+                
+                <div class="input-group">
+                    <label for="namaLengkap">1. Nama Lengkap *</label>
+                    <input type="text" id="namaLengkap" name="namaLengkap" placeholder="Sesuai dokumen resmi" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="tempatLahir">2. Tempat Lahir *</label>
+                        <input type="text" id="tempatLahir" name="tempatLahir" placeholder="Kota/Kabupaten kelahiran" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="tanggalLahir">3. Tanggal Lahir *</label>
+                        <input type="date" id="tanggalLahir" name="tanggalLahir" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="jenisKelamin">4. Jenis Kelamin *</label>
+                        <select id="jenisKelamin" name="jenisKelamin" required>
+                            <option value="" disabled selected>Pilih Jenis Kelamin</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="agama">5. Agama *</label>
+                        <select id="agama" name="agama" required>
+                            <option value="" disabled selected>Pilih Agama</option>
+                            <option value="Islam">Islam</option>
+                            <option value="Kristen">Kristen</option>
+                            <option value="Katolik">Katolik</option>
+                            <option value="Hindu">Hindu</option>
+                            <option value="Buddha">Buddha</option>
+                            <option value="Konghucu">Konghucu</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="kewarganegaraan">6. Kewarganegaraan *</label>
+                        <input type="text" id="kewarganegaraan" name="kewarganegaraan" placeholder="Contoh: WNI" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="statusKawin">7. Status Perkawinan *</label>
+                        <select id="statusKawin" name="statusKawin" required>
+                            <option value="" disabled selected>Pilih Status</option>
+                            <option value="Belum Kawin">Belum Kawin</option>
+                            <option value="Kawin">Kawin</option>
+                            <option value="Cerai Hidup">Cerai Hidup</option>
+                            <option value="Cerai Mati">Cerai Mati</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="namaIbu">8. Nama Lengkap Ibu Kandung *</label>
+                    <input type="text" id="namaIbu" name="namaIbu" placeholder="Masukkan nama ibu kandung" required>
+                </div>
+
+                <div class="input-group">
+                    <label>9. Pernyataan Difabel *</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="difabel" value="Ya" required> Ya
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="difabel" value="Tidak" required> Tidak
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bagian 2: Kontak & Domisili -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-number">2</span>
+                    <h2>Kontak & Domisili</h2>
+                </div>
+
+                <div class="input-group">
+                    <label for="alamat">10. Alamat Lengkap * <span class="help-text">(Domisili saat ini di Turki)</span></label>
+                    <textarea id="alamat" name="alamat" rows="3" placeholder="Tuliskan alamat lengkap Anda di Turki saat ini" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="noWA">11. No. WhatsApp Aktif *</label>
+                        <input type="tel" id="noWA" name="noWA" placeholder="Contoh: +905..." required>
+                    </div>
+                    <div class="input-group">
+                        <label for="email">12. Email Aktif *</label>
+                        <input type="email" id="email" name="email" placeholder="contoh@email.com" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bagian 3: Pendidikan & Pekerjaan -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-number">3</span>
+                    <h2>Latar Belakang Pendidikan & Pekerjaan</h2>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="pendidikanTerakhir">13. Pendidikan Terakhir *</label>
+                        <select id="pendidikanTerakhir" name="pendidikanTerakhir" required>
+                            <option value="" disabled selected>Pilih Pendidikan</option>
+                            <option value="SMA/Sederajat">SMA/SMK/MA/Sederajat</option>
+                            <option value="D1/D2/D3">Diploma (D1/D2/D3)</option>
+                            <option value="S1/D4">Sarjana (S1/D4)</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="sekolahAsal">14. Sekolah Asal *</label>
+                        <input type="text" id="sekolahAsal" name="sekolahAsal" placeholder="Nama sekolah/kampus sebelumnya" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="jurusanAsal">15. Jurusan Asal *</label>
+                        <input type="text" id="jurusanAsal" name="jurusanAsal" placeholder="Contoh: IPA, Akuntansi, dll" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="pekerjaan">16. Status Pekerjaan Saat Ini *</label>
+                        <input type="text" id="pekerjaan" name="pekerjaan" placeholder="Contoh: Mahasiswa, Pegawai, dll" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bagian 4: Rencana Studi -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-number">4</span>
+                    <h2>Rencana Studi</h2>
+                </div>
+
+                <div class="input-group">
+                    <label for="jurusanTujuan">17. Jurusan yang Ingin Diambil *</label>
+                    <p class="help-text-link">Buka link ini untuk melihat daftar fakultas dan jurusan: <a href="https://salutbilgeturki.com/fakultas" target="_blank">salutbilgeturki.com/fakultas</a></p>
+                    <input type="text" id="jurusanTujuan" name="jurusanTujuan" placeholder="Tuliskan nama jurusan pilihan Anda" required>
+                </div>
+            </section>
+
+            <!-- Bagian 5: Unggah Dokumen -->
+            <section class="form-section upload-section-container">
+                <div class="section-header">
+                    <span class="section-number">5</span>
+                    <h2>Unggah Berkas Wajib</h2>
+                </div>
+
+                <div class="rules-box">
+                    <div class="rules-column">
+                        <h3>Ketentuan Pas Foto</h3>
+                        <ul>
+                            <li>Wajah menghadap ke depan dan terlihat jelas</li>
+                            <li>Pakaian tidak bercorak (bukan kaus atau T-shirt)</li>
+                            <li>Untuk laki-laki tidak memakai penutup kepala</li>
+                            <li>Untuk wanita tidak memakai penutup wajah/cadar. Bagi yang berkerudung, tidak bercorak.</li>
+                            <li>Warna latar belakang foto harus berbeda dengan warna pakaian</li>
+                        </ul>
+                    </div>
+                    <div class="rules-column">
+                        <h3>Ketentuan Unggah Berkas</h3>
+                        <ul>
+                            <li>Format berkas adalah gambar (.jpg, .jpeg, .png)</li>
+                            <li>Khusus berkas Ijazah, Transkrip Nilai, Surat Keterangan mengajar dan Surat Keterangan cpns/yayasan adalah PDF (.pdf)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 1. Pas Foto -->
+                <div class="upload-item">
+                    <div class="upload-item-info">
+                        <label for="pasFoto">Pas Foto Berwarna (3x4) <span class="required-asterisk">*</span></label>
+                        <span class="file-format">Format: JPG/PNG</span>
+                    </div>
+                    <div class="upload-action">
+                        <input type="file" id="pasFoto" name="pasFoto" accept="image/png, image/jpeg, image/jpg" required class="file-input-hidden">
+                        <button type="button" class="btn-upload" onclick="document.getElementById('pasFoto').click()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Unggah
+                        </button>
+                        <span id="pasFotoName" class="file-chosen-text">Belum ada berkas</span>
+                    </div>
+                </div>
+
+                <!-- 2. KTP -->
+                <div class="upload-item">
+                    <div class="upload-item-info">
+                        <label for="ktp">KTP Asli <span class="required-asterisk">*</span></label>
+                        <span class="file-format">Format: JPG/PNG</span>
+                    </div>
+                    <div class="upload-action">
+                        <input type="file" id="ktp" name="ktp" accept="image/png, image/jpeg, image/jpg" required class="file-input-hidden">
+                        <button type="button" class="btn-upload" onclick="document.getElementById('ktp').click()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Unggah
+                        </button>
+                        <span id="ktpName" class="file-chosen-text">Belum ada berkas</span>
+                    </div>
+                </div>
+
+                <!-- 3. Ijazah -->
+                <div class="upload-item">
+                    <div class="upload-item-info">
+                        <label for="ijazah">Fotocopy Ijazah Pendidikan Terakhir Legalisir Cap Basah <span class="required-asterisk">*</span></label>
+                        <span class="file-format">Format: PDF</span>
+                    </div>
+                    <div class="upload-action">
+                        <input type="file" id="ijazah" name="ijazah" accept="application/pdf" required class="file-input-hidden">
+                        <button type="button" class="btn-upload" onclick="document.getElementById('ijazah').click()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Unggah
+                        </button>
+                        <span id="ijazahName" class="file-chosen-text">Belum ada berkas</span>
+                    </div>
+                </div>
+
+                <div class="upload-legend">
+                    <div class="legend-dot"></div>
+                    <span>Hitam: Belum / Baru Unggah Berkas</span>
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <button type="submit" id="submitBtn" class="submit-btn">
+                    <span>Simpan dan Selanjutnya</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </div>
+            
+            <div id="statusMessage" class="status-message hidden"></div>
+        </form>
+
+        <!-- Success Screen -->
+        <div id="successScreen" class="success-screen hidden">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <h2>Pemberkasan Berhasil Diterima</h2>
+            <p class="success-primary-text">Terima kasih, kelengkapan data dan dokumen Anda telah berhasil kami simpan ke dalam sistem database.</p>
+            
+            <div class="privacy-notice">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <p><strong>Privasi & Keamanan Terjamin</strong><br>Kami sangat menghargai privasi Anda. Seluruh data pribadi dan dokumen yang Anda unggah dijaga kerahasiaannya dengan standar keamanan tinggi dan hanya akan digunakan untuk keperluan administrasi akademik di Salut Bilge Turki UT.</p>
+            </div>
+
+            <button type="button" class="btn-back-home" onclick="window.location.reload()">
+                Kembali
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
