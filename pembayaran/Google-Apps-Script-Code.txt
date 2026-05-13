@@ -106,7 +106,7 @@ function kirimInvoiceLunas() {
     return;
   }
   
-  var status = sheet.getRange(row, 8).getValue();
+  var status = sheet.getRange(row, 9).getValue();
   if (status === 'Email Terkirim LUNAS') {
     SpreadsheetApp.getUi().alert('Invoice untuk pendaftar ini SUDAH PERNAH dikirim!');
     return;
@@ -117,9 +117,9 @@ function kirimInvoiceLunas() {
   var waktu = sheet.getRange(row, 1).getValue();
   var invoiceNumber = sheet.getRange(row, 2).getValue();
   var namaLengkap = sheet.getRange(row, 3).getValue();
-  var email = sheet.getRange(row, 4).getValue();
-  var noWA = sheet.getRange(row, 5).getValue();
-  var layanan = sheet.getRange(row, 6).getValue();
+  var email = sheet.getRange(row, 5).getValue();
+  var noWA = sheet.getRange(row, 6).getValue();
+  var layanan = sheet.getRange(row, 7).getValue();
   
   var dateString = "";
   if (waktu instanceof Date) {
@@ -261,7 +261,7 @@ function kirimInvoiceLunas() {
     });
 
     // Tandai sukses di Sheets
-    sheet.getRange(row, 8).setValue('Email Terkirim LUNAS');
+    sheet.getRange(row, 9).setValue('Email Terkirim LUNAS');
     SpreadsheetApp.getUi().alert('✅ SUKSES!\n\nInvoice PDF dengan stempel LUNAS telah berhasil dikirimkan ke email:\n' + email);
     
   } catch(e) {
