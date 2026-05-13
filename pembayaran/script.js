@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const payload = {
                 namaLengkap: formData.get('namaLengkap'),
+                nimUT: formData.get('nimUT') || '',
                 email: formData.get('email'),
                 noWA: formData.get('noWA'),
                 layanan: formData.get('layanan'),
