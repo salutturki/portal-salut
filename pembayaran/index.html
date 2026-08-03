@@ -20,6 +20,46 @@
             <p id="mainSubtitle">Silakan isi data diri Anda dan unggah bukti transfer. Sistem akan otomatis mengirimkan *Invoice* berformat PDF ke email Anda.</p>
         </header>
 
+        <!-- Informasi Akademik (Accordion) -->
+        <div class="info-accordion">
+            <button class="accordion-btn" type="button" id="infoAccordionBtn">
+                <span>📚 Informasi Resmi Biaya Pendidikan & Ketentuan</span>
+                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="accordion-content" id="infoAccordionContent">
+                <div class="accordion-inner">
+                    <h3>Skema I: Pembayaran Biaya Sentra Layanan Universitas Terbuka per Semester</h3>
+                    <p><strong>Semester 1: Rp3.429.000</strong><br>
+                    Sudah termasuk: Biaya pendaftaran dan materai, Biaya Sentra Layanan Universitas Terbuka, Biaya pendidikan (20 SKS), dan Perlengkapan Mahasiswa (Student Kit).</p>
+                    <p><strong>Semester 2: Rp2.729.000</strong><br>
+                    Sudah termasuk: Biaya Sentra Layanan Universitas Terbuka, Biaya pendidikan (20 SKS).</p>
+                    <p><strong>Mulai Semester 3: Rp3.329.000 per semester</strong><br>
+                    Sudah termasuk: Biaya Sentra Layanan Universitas Terbuka, Biaya pendidikan (24 SKS).</p>
+                    
+                    <hr>
+
+                    <h3>Skema II: Pembayaran Biaya Sentra Layanan Sekali hingga Lulus</h3>
+                    <p>Mahasiswa dapat melunasi Biaya Sentra Layanan Universitas Terbuka satu kali pada awal masa studi, sehingga pada semester berikutnya hanya membayar biaya pendidikan saja.</p>
+                    <p><strong>Biaya Sentra Layanan hingga lulus: Rp3.889.000</strong> (dibayarkan satu kali di awal).</p>
+                    <p><strong>Biaya Pendidikan (Dibayar setiap semester):</strong><br>
+                    - Semester 1 (20 SKS): Rp2.410.000<br>
+                    - Semester 2 (20 SKS): Rp2.410.000<br>
+                    - Mulai Semester 3 (24 SKS): Rp2.890.000 per semester</p>
+                    <p class="help-text" style="font-size: 0.85rem; margin-top: -0.5rem; color: #4B5563;"><em>* Nominal Biaya Pendidikan Skema II telah termasuk biaya administrasi transaksi pembayaran melalui QRIS.</em></p>
+
+                    <hr>
+
+                    <h3>Ketentuan Tambahan & Perlengkapan Mahasiswa</h3>
+                    <ul>
+                        <li><strong>Khusus Prodi Sistem Informasi:</strong> Biaya pendidikan mengikuti tarif Rp250.000 per SKS.</li>
+                        <li>Perlengkapan Mahasiswa (Student Kit: Almamater, KTM, Lanyard) dikirimkan <strong>satu kali</strong> ke alamat di Indonesia. Ongkos kirim menjadi tanggung jawab mahasiswa.</li>
+                        <li>Biaya pendidikan belum termasuk mata kuliah ulang/remedial (jika diperlukan).</li>
+                        <li>Informasi biaya dapat mengalami penyesuaian apabila terdapat kebijakan baru dari Universitas Terbuka.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <form id="paymentForm" class="main-form">
             <!-- Informasi Pembayaran -->
             <section class="form-section payment-section">
@@ -66,24 +106,24 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="layanan">Paket Layanan yang Dipilih *</label>
+                    <label for="layanan">Skema Pembayaran Biaya Pendidikan *</label>
                     <select id="layanan" name="layanan" required>
-                        <option value="" disabled selected>Pilih Paket Layanan</option>
-                        <optgroup label="Paket Mahasiswa Baru">
-                            <option value="Starter UT - IDR 329.000">Starter UT — IDR 329.000</option>
-                            <option value="Starter UT ALL IN - IDR 2.729.000">Starter UT ALL IN — IDR 2.729.000</option>
-                            <option value="Starter Plus - IDR 529.000 / semester">Starter Plus — IDR 529.000 / semester</option>
-                            <option value="Starter Plus ALL IN - IDR 2.929.000">Starter Plus ALL IN — IDR 2.929.000</option>
-                            <option value="Academic Support - IDR 729.000">Academic Support — IDR 729.000</option>
-                            <option value="Academic Support ALL IN - IDR 3.129.000">Academic Support ALL IN — IDR 3.129.000</option>
-                            <option value="Pasti Lulus - IDR 3.889.000 💎">Pasti Lulus — IDR 3.889.000 💎</option>
+                        <option value="" disabled selected>Pilih Skema Pembayaran</option>
+                        <optgroup label="SKEMA I (Pembayaran per Semester)">
+                            <option value="Skema I: Semester 1 - IDR 3.429.000">Semester 1 — Rp3.429.000</option>
+                            <option value="Skema I: Semester 2 - IDR 2.729.000">Semester 2 — Rp2.729.000</option>
+                            <option value="Skema I: Mulai Semester 3 - IDR 3.329.000">Mulai Semester 3 — Rp3.329.000</option>
                         </optgroup>
-                        <optgroup label="Khusus Mahasiswa Lama">
-                            <option value="Member Salut - IDR 449.000">Member Salut — IDR 449.000</option>
-                            <option value="Member Salut (Khusus) - IDR 599.000">Member Salut (Khusus) — IDR 599.000</option>
+                        <optgroup label="SKEMA II (Biaya Layanan Sekali hingga Lulus)">
+                            <option value="Skema II: Pelunasan Layanan Awal - IDR 3.889.000">Pelunasan Layanan Awal — Rp3.889.000</option>
+                            <option value="Skema II: Biaya Pendidikan Sem 1/2 - IDR 2.410.000">Biaya Pendidikan (Sem 1 atau 2) — Rp2.410.000</option>
+                            <option value="Skema II: Biaya Pendidikan Sem 3+ - IDR 2.890.000">Biaya Pendidikan (Mulai Sem 3) — Rp2.890.000</option>
+                        </optgroup>
+                        <optgroup label="Lainnya">
+                            <option value="Mahasiswa Lama / Prodi SI - Menyesuaikan">Mahasiswa Lama / Prodi SI (Sesuai Arahan Admin)</option>
                         </optgroup>
                     </select>
-                    <p class="help-text" style="margin-top: 0.5rem;">Catatan: Opsi <strong>Member Salut</strong> khusus untuk mahasiswa yang sebelumnya sudah terdaftar. Pilih opsi pembayaran sesuai dengan yang telah dikomunikasikan dengan admin.</p>
+                    <p class="help-text" style="margin-top: 0.5rem;">Catatan: Khusus <strong>Program Studi Sistem Informasi</strong>, pengambilan SKS di bawah ketentuan, atau mahasiswa lama, harap pilih opsi "Menyesuaikan" dan transfer nominal sesuai arahan admin.</p>
                 </div>
             </section>
             

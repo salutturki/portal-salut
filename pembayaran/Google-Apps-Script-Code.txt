@@ -3,10 +3,10 @@
 // =========================================================================
     
 // 1. ID Folder Google Drive untuk menyimpan Bukti Transfer
-var FOLDER_ID = "MASUKKAN_ID_FOLDER_GOOGLE_DRIVE_ANDA_DISINI"; 
+var FOLDER_ID = "1Hls-kRaRNqQ2wFUt-j92XQmYHp_5wI2J"; 
 
 // 2. ID Google Sheets untuk menyimpan Rekap Pembayaran
-var SHEET_ID = "MASUKKAN_ID_GOOGLE_SHEETS_ANDA_DISINI";
+var SHEET_ID = "18dZQtyJdg0_nQn11XphLDkgsfNjQuRArzjUjEQ2voxM";
 
 // 3. Konfigurasi Teks Email yang akan dikirim ke Mahasiswa
 var EMAIL_SUBJECT = "Invoice LUNAS Pembayaran - Salut Bilge Turki UT";
@@ -136,33 +136,18 @@ function kirimInvoiceLunas() {
 
   // Susun Rincian Tagihan
   var rincianHTML = "";
-  if (namaLayanan.includes("Starter UT ALL IN")) {
-     rincianHTML += "<tr><td>Biaya Salut (Starter UT)</td><td style='text-align:right;'>IDR 199.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Akademik 1 Semester (20 SKS @120.000)</td><td style='text-align:right;'>IDR 2.400.000</td></tr>";
-  } else if (namaLayanan.includes("Starter UT")) {
-     rincianHTML += "<tr><td>Biaya Salut (Starter UT)</td><td style='text-align:right;'>IDR 199.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
-  } else if (namaLayanan.includes("Starter Plus ALL IN")) {
-     rincianHTML += "<tr><td>Biaya Salut (Starter Plus)</td><td style='text-align:right;'>IDR 399.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Akademik 1 Semester (20 SKS @120.000)</td><td style='text-align:right;'>IDR 2.400.000</td></tr>";
-  } else if (namaLayanan.includes("Starter Plus")) {
-     rincianHTML += "<tr><td>Biaya Salut (Starter Plus)</td><td style='text-align:right;'>IDR 399.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
-  } else if (namaLayanan.includes("Academic Support ALL IN")) {
-     rincianHTML += "<tr><td>Biaya Salut (Academic Support)</td><td style='text-align:right;'>IDR 599.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Akademik 1 Semester (20 SKS @120.000)</td><td style='text-align:right;'>IDR 2.400.000</td></tr>";
-  } else if (namaLayanan.includes("Academic Support")) {
-     rincianHTML += "<tr><td>Biaya Salut (Academic Support)</td><td style='text-align:right;'>IDR 599.000</td></tr>";
-     rincianHTML += "<tr><td>Biaya Admisi Pendaftaran + Materai</td><td style='text-align:right;'>IDR 130.000</td></tr>";
-  } else if (namaLayanan.includes("Member Salut (Khusus)")) {
-     rincianHTML += "<tr><td>Paket Member Salut (Pembayaran Khusus)</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
-  } else if (namaLayanan.includes("Member Salut")) {
-     rincianHTML += "<tr><td>Paket Member Salut (Perpanjangan)</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
-  } else if (namaLayanan.includes("Pasti Lulus")) {
-     rincianHTML += "<tr><td>Paket Pasti Lulus</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  if (namaLayanan.includes("Skema I: Semester 1")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Termasuk: Biaya Pendaftaran, Biaya Sentra Layanan, Biaya Pendidikan 20 SKS, Student Kit)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Skema I: Semester 2")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Termasuk: Biaya Sentra Layanan, Biaya Pendidikan 20 SKS)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Skema I: Mulai Semester 3")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Termasuk: Biaya Sentra Layanan, Biaya Pendidikan 24 SKS)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Skema II: Pelunasan Layanan Awal")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Pembayaran satu kali untuk Biaya Sentra Layanan hingga lulus)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Skema II: Biaya Pendidikan Sem 1/2")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Biaya Pendidikan 20 SKS & Biaya Admin QRIS)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Skema II: Biaya Pendidikan Sem 3+")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Biaya Pendidikan 24 SKS & Biaya Admin QRIS)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
   } else {
      rincianHTML += "<tr><td>" + namaLayanan + "</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
   }

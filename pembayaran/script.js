@@ -3,6 +3,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submitBtn');
     const statusMessage = document.getElementById('statusMessage');
 
+    // Accordion Toggle
+    const accordionBtn = document.getElementById('infoAccordionBtn');
+    const accordionContent = document.getElementById('infoAccordionContent');
+    if (accordionBtn && accordionContent) {
+        accordionBtn.addEventListener('click', () => {
+            accordionBtn.classList.toggle('active');
+            if (accordionBtn.classList.contains('active')) {
+                accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+            } else {
+                accordionContent.style.maxHeight = "0";
+            }
+        });
+    }
+
     // Handle File Input UI
     const fileInputs = [
         { inputId: 'buktiTransfer', nameId: 'buktiTransferName', maxSize: 5 },

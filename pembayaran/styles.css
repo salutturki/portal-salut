@@ -79,6 +79,83 @@ body {
     font-size: 0.95rem;
 }
 
+/* Accordion */
+.info-accordion {
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #fff;
+}
+
+.accordion-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background-color: #F8FAFC;
+    border: none;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+    text-align: left;
+    transition: background-color 0.2s;
+}
+
+.accordion-btn:hover {
+    background-color: #F1F5F9;
+}
+
+.accordion-btn .chevron {
+    transition: transform 0.3s ease;
+}
+
+.accordion-btn.active .chevron {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.accordion-inner {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.accordion-inner h3 {
+    font-size: 1.1rem;
+    color: var(--primary-blue);
+    margin-bottom: 0.75rem;
+    margin-top: 1rem;
+}
+
+.accordion-inner h3:first-child {
+    margin-top: 0;
+}
+
+.accordion-inner p {
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.accordion-inner ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.accordion-inner hr {
+    border: 0;
+    border-top: 1px dashed var(--border-color);
+    margin: 1.5rem 0;
+}
+
 /* Sections */
 .form-section {
     background: #FFFFFF;
