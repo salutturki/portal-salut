@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } catch (error) {
             console.error('Error:', error);
-            statusMessage.textContent = 'Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi.';
+            statusMessage.textContent = 'Terjadi kesalahan: ' + error.message;
             statusMessage.className = 'status-message error';
         } finally {
             submitBtn.innerHTML = originalBtnText;
