@@ -270,9 +270,48 @@ function kirimInvoiceLunas() {
       name: "Salut Bilge Turki UT"
     });
 
+    // --- INTEGRASI SUPABASE (CATATAN KEUANGAN) ---
+    var cleanNumber = hargaLayanan.replace(/[^0-9]/g, '');
+    var grossAmount = parseInt(cleanNumber, 10);
+    if (isNaN(grossAmount)) grossAmount = 0;
+    var feeAmount = Math.round(grossAmount * 0.003); // Potongan QRIS 0.3%
+    var netAmount = grossAmount - feeAmount;
+    
+    // Format tanggal ke YYYY-MM-DD
+    var d = new Date();
+    var dateString = d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+    
+    var supabaseUrl = "https://mljablqwmkyztazjcoyn.supabase.co/rest/v1/transactions";
+    var supabaseKey = "sb_secret_ehEeUWGQATZ_hOP41iQrig_tXzRUiHD";
+    
+    var payload = {
+      "transaction_date": dateString,
+      "type": "income",
+      "category": "Pembayaran Mahasiswa",
+      "description": "Pembayaran Lunas - " + namaLengkap + " (" + layananDipilih + ")",
+      "gross_amount": grossAmount,
+      "fee_amount": feeAmount,
+      "net_amount": netAmount
+    };
+    
+    var options = {
+      "method" : "post",
+      "contentType": "application/json",
+      "headers": {
+        "apikey": supabaseKey,
+        "Authorization": "Bearer " + supabaseKey,
+        "Prefer": "return=minimal"
+      },
+      "payload" : JSON.stringify(payload),
+      "muteHttpExceptions": true
+    };
+    
+    UrlFetchApp.fetch(supabaseUrl, options);
+    // --- AKHIR INTEGRASI SUPABASE ---
+
     // Tandai sukses di Sheets
     sheet.getRange(row, 9).setValue('Email Terkirim LUNAS');
-    SpreadsheetApp.getUi().alert('✅ SUKSES!\n\nInvoice PDF dengan stempel LUNAS telah berhasil dikirimkan ke email:\n' + email);
+    SpreadsheetApp.getUi().alert('✅ SUKSES!\n\nInvoice PDF telah dikirim dan Dana telah otomatis masuk ke Buku Kas Salut!\n\nNama: ' + namaLengkap);
     
   } catch(e) {
     SpreadsheetApp.getUi().alert('❌ GAGAL MENGIRIM EMAIL!\n\nPastikan alamat email ("' + email + '") diketik dengan benar tanpa spasi ekstra.\nError: ' + e.toString());
