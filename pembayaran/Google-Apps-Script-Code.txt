@@ -1,4 +1,4 @@
-// =========================================================================
+﻿// =========================================================================
 // KONFIGURASI UTAMA
 // =========================================================================
     
@@ -11,15 +11,13 @@ var SHEET_ID = "18dZQtyJdg0_nQn11XphLDkgsfNjQuRArzjUjEQ2voxM";
 // 3. Konfigurasi Teks Email yang akan dikirim ke Mahasiswa
 var EMAIL_SUBJECT = "Invoice LUNAS Pembayaran - Salut Bilge Turki UT";
 var EMAIL_BODY = 
-  "Yth. Bapak/Ibu {NAMA},\n\n" +
-  "Pembayaran Anda telah berhasil kami verifikasi.\n" +
-  "Berikut kami lampirkan Invoice (Bukti Tagihan) resmi pendaftaran Anda berformat PDF " +
-  "sebagai tanda bukti bahwa pembayaran Anda telah LUNAS.\n\n" +
-  "Langkah selanjutnya, tim administrasi kami akan segera menghubungi Anda melalui WhatsApp " +
-  "untuk proses lebih lanjut.\n\n" +
-  "Jika ada pertanyaan, silakan balas email ini atau hubungi layanan WhatsApp kami.\n\n" +
+  "Yth. Saudara/i {NAMA},\n\n" +
+  "Kami memberitahukan bahwa pembayaran Biaya Sentra Layanan Anda telah kami terima dan diverifikasi.\n\n" +
+  "Bersama surat elektronik ini, kami melampirkan Invoice (Faktur Pembayaran) resmi dalam format PDF sebagai bukti transaksi yang sah.\n\n" +
+  "Langkah selanjutnya, tim administrasi kami akan segera menghubungi Saudara/i melalui layanan pesan WhatsApp untuk memandu tahapan registrasi dan pendampingan akademik berikutnya.\n\n" +
+  "Apabila terdapat pertanyaan lebih lanjut terkait proses akademik maupun administrasi, Saudara/i dapat menghubungi layanan komunikasi resmi kami.\n\n" +
   "Hormat kami,\n" +
-  "Tim Administrasi Salut Bilge Turki UT";
+  "Administrasi Sentra Layanan Universitas Terbuka Turki";
 
 // =========================================================================
 // BAGIAN 1: MENERIMA DATA DARI WEB (Hanya Simpan Data, Tidak Kirim Email)
@@ -89,7 +87,7 @@ function doGet(e) {
 // =========================================================================
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('⚙️ Menu Salut')
+  ui.createMenu('âš™ï¸ Menu Salut')
       .addItem('Kirim Invoice (LUNAS)', 'kirimInvoiceLunas')
       .addToUi();
 }
@@ -162,18 +160,14 @@ function kirimInvoiceLunas() {
 
   // Susun Rincian Tagihan
   var rincianHTML = "";
-  if (namaLayanan.includes("Skema I: Semester 1")) {
-     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Termasuk: Biaya Pendaftaran, Biaya Sentra Layanan, Biaya Pendidikan 20 SKS, Student Kit)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
-  } else if (namaLayanan.includes("Skema I: Semester 2")) {
-     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Termasuk: Biaya Sentra Layanan, Biaya Pendidikan 20 SKS)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
-  } else if (namaLayanan.includes("Skema I: Mulai Semester 3")) {
-     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Termasuk: Biaya Sentra Layanan, Biaya Pendidikan 24 SKS)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
-  } else if (namaLayanan.includes("Skema II: Pelunasan Layanan Awal")) {
-     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Pembayaran satu kali untuk Biaya Sentra Layanan hingga lulus)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
-  } else if (namaLayanan.includes("Skema II: Biaya Pendidikan Sem 1/2")) {
-     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Biaya Pendidikan 20 SKS & Biaya Admin QRIS)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
-  } else if (namaLayanan.includes("Skema II: Biaya Pendidikan Sem 3+")) {
-     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Biaya Pendidikan 24 SKS & Biaya Admin QRIS)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  if (namaLayanan.includes("Semester 1")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Terdiri atas: Biaya Sentra Layanan, Biaya Admisi, dan Materai)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Semester 2")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Biaya Sentra Layanan)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Semester 3 dan seterusnya")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Biaya Sentra Layanan per semester)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
+  } else if (namaLayanan.includes("Biaya hingga lulus")) {
+     rincianHTML += "<tr><td>" + namaLayanan + "<br><small><i>(Pembayaran satu kali untuk Biaya Sentra Layanan seluruh masa studi)</i></small></td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
   } else {
      rincianHTML += "<tr><td>" + namaLayanan + "</td><td style='text-align:right;'>" + hargaLayanan + "</td></tr>";
   }
@@ -272,9 +266,10 @@ function kirimInvoiceLunas() {
 
     // Tandai sukses di Sheets
     sheet.getRange(row, 9).setValue('Email Terkirim LUNAS');
-    SpreadsheetApp.getUi().alert('✅ SUKSES!\n\nInvoice PDF telah berhasil dikirim ke mahasiswa!\n\nNama: ' + namaLengkap);
+    SpreadsheetApp.getUi().alert('âœ… SUKSES!\n\nInvoice PDF telah berhasil dikirim ke mahasiswa!\n\nNama: ' + namaLengkap);
     
   } catch(e) {
-    SpreadsheetApp.getUi().alert('❌ GAGAL MENGIRIM EMAIL!\n\nPastikan alamat email ("' + email + '") diketik dengan benar tanpa spasi ekstra.\nError: ' + e.toString());
+    SpreadsheetApp.getUi().alert('âŒ GAGAL MENGIRIM EMAIL!\n\nPastikan alamat email ("' + email + '") diketik dengan benar tanpa spasi ekstra.\nError: ' + e.toString());
   }
 }
+
