@@ -1,4 +1,4 @@
-function doPost(e) {
+﻿function doPost(e) {
   try {
     // 1. Ganti dengan ID Folder Google Drive Anda
     var FOLDER_ID = "MASUKKAN_ID_FOLDER_GOOGLE_DRIVE_ANDA_DISINI"; 
@@ -28,6 +28,7 @@ function doPost(e) {
     var pasFotoUrl = saveFile(data.pasFotoBase64, data.pasFotoMimeType, data.pasFotoName, safeName + "_Foto");
     var ktpUrl = saveFile(data.ktpBase64, data.ktpMimeType, data.ktpName, safeName + "_KTP");
     var ijazahUrl = saveFile(data.ijazahBase64, data.ijazahMimeType, data.ijazahName, safeName + "_Ijazah");
+    var ttdUrl = saveFile(data.ttdBase64, data.ttdMimeType, data.ttdName, safeName + "_TTD");
     
     // Menyimpan data ke Google Sheets menggunakan ID (Lebih Aman dan Anti-Gagal)
     var sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
@@ -39,7 +40,7 @@ function doPost(e) {
         "Agama", "Kewarganegaraan", "Status Kawin", "Nama Ibu Kandung", "Pernyataan Difabel", 
         "Alamat di Turki", "No WhatsApp", "Email", "Pendidikan Terakhir", "Sekolah Asal", 
         "Jurusan Asal", "Pekerjaan", "Jurusan Tujuan", 
-        "Link Pas Foto", "Link KTP", "Link Ijazah"
+        "Link Pas Foto", "Link KTP", "Link Ijazah", "Link Tanda Tangan"
       ]);
       sheet.setFrozenRows(1);
     }
@@ -66,7 +67,8 @@ function doPost(e) {
       data.jurusanTujuan,
       pasFotoUrl,
       ktpUrl,
-      ijazahUrl
+      ijazahUrl,
+      ttdUrl
     ]);
     
     return ContentService.createTextOutput(JSON.stringify({ "status": "success", "message": "Data berhasil disimpan!" })).setMimeType(ContentService.MimeType.JSON);
@@ -79,3 +81,4 @@ function doPost(e) {
 function doGet(e) {
   return ContentService.createTextOutput("Script Aktif! Siap menerima data pemberkasan.").setMimeType(ContentService.MimeType.TEXT);
 }
+

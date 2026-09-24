@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('registrationForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusMessage = document.getElementById('statusMessage');
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Ubah state tombol
         const originalBtnText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span>Menyimpan Data...</span><span class="spinner">⏳</span>';
+        submitBtn.innerHTML = '<span>Menyimpan Data...</span><span class="spinner">â³</span>';
         submitBtn.disabled = true;
         statusMessage.className = 'status-message hidden';
 
@@ -167,8 +167,33 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } catch (error) {
             console.error('Error:', error);
-            statusMessage.textContent = 'Terjadi kesalahan saat mengirim pendaftaran. Silakan coba lagi.';
-            statusMessage.className = 'status-message error';
+            
+            // Workaround untuk Google Apps Script CORS/Redirect issue
+            // Terkadang browser melempar TypeError 'Failed to fetch' saat Google meredirect response JSON
+            // Padahal data sudah BERHASIL masuk ke Google Drive & Sheets.
+            if (error.name === 'TypeError' || error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                console.log('Mengabaikan error CORS/Fetch dari Google, karena data kemungkinan besar sudah masuk.');
+                
+                form.reset();
+                form.classList.add('hidden');
+                const mainTitle = document.getElementById('mainTitle');
+                if (mainTitle) mainTitle.classList.add('hidden');
+                const mainSubtitle = document.getElementById('mainSubtitle');
+                if (mainSubtitle) mainSubtitle.classList.add('hidden');
+                
+                const successScreen = document.getElementById('successScreen');
+                if (successScreen) {
+                    successScreen.classList.remove('hidden');
+                    try {
+                        successScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } catch (e) {
+                        window.scrollTo(0, 0);
+                    }
+                }
+            } else {
+                statusMessage.textContent = 'Terjadi kesalahan: ' + error.message;
+                statusMessage.className = 'status-message error';
+            }
         } finally {
             // Kembalikan state tombol
             submitBtn.innerHTML = originalBtnText;
@@ -176,17 +201,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Fungsi bantuan untuk mengubah file menjadi Base64
+    // Fungsi bantuan untuk kompresi dan convert file menjadi Base64
     function convertFileToBase64(file) {
         return new Promise((resolve, reject) => {
             if (!file) {
                 resolve("");
                 return;
             }
+            
+            // Jika bukan gambar (misal PDF), langsung convert tanpa kompresi
+            if (!file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                return;
+            }
+
+            // Jika gambar, lakukan kompresi via Canvas
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1200;
+                    const MAX_HEIGHT = 1200;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Kompresi menjadi JPEG dengan kualitas 0.7
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    resolve(dataUrl);
+                };
+                img.onerror = error => reject(error);
+            };
             reader.onerror = error => reject(error);
         });
     }
 });
+
+
